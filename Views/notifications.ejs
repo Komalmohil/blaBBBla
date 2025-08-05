@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+<link rel="stylesheet" href="/css/searchbar.css">
+</head>
+<body>
+  
+    <%- include('partials/header.ejs') %>
+    <main>
+  <div class="container">
+  <% if (notifications && notifications.length > 0) { %>
+    <% notifications.forEach(n => { %>
+      <div class="notification">
+        <p><%= n.message %></p>
+
+        <% if (n.type === "message") { %>
+          <a class="view-link" href="/notification/read/<%= n._id %>?to=/inbox/<%= n.roomId %>">View Chat</a>
+
+        <% } else if (n.type === "request") { %>
+          <a class="view-link" href="/notification/read/<%= n._id %>?to=/ride/<%= n.rideId._id || n.rideId %>/requests">View Requests</a>
+
+        <% } else if (n.type === "acceptance" || n.type === "rejection") { %>
+          <a class="view-link" href="/notification/read/<%= n._id %>?to=/ride/<%= (n.rideId&&(n.rideId._id||n.rideId))%>">View Ride</a>
+
+        <% } else { %>
+          <span>No link available</span>
+        <% } %>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No notifications.</p>
+  <% } %>
+</div>
+</main>
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Publish a Ride</title>
+   <link rel="stylesheet" href="/css/ride.css"> 
+</head>
+<body>
+    <%- include('partials/header.ejs') %>
+  <h1>Publish a Ride</h1>
+
+<div class="container">
+  <form action="/publish" method="POST">
+  <label for="location">From:</label>
+  <input type="text" id="location" name="location" autocomplete="off">
+  <div id="locSugg" class="autocomplete-suggestions hidden"></div>
+
+  <label for="destination">To:</label>
+  <input type="text" id="destination" name="destination" autocomplete="off">
+  <div id="desSugg" class="autocomplete-suggestions hidden"></div>
+
+  <button type="submit">Publish Ride</button>
+</form>
+
+</div>
+  <script src="/js/autocomplete.js"></script>
+</body>
+</html>

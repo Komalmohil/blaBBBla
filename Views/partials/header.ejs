@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+     <link rel="stylesheet" href="/css/style.css">
+     <link rel="stylesheet" href="/css/notify.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="left">
+      <img src="https://logos-world.net/wp-content/uploads/2022/04/BlaBlaCar-Symbol.png" alt="logo" class="logo">
+      <a href="/"><span id="blabla">BlaBlaCar</span></a>
+    </div>
+    <% if (typeof hideNotification === "undefined" || !hideNotification) { %>
+  <div id="notification-container" style="position: fixed; top: 10px; right: 10px; z-index: 1000;"></div>
+<% } %>
+
+
+    <div class="right">
+      <a href="/search" class="link"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+      <a href="/publish" class="link"><i class="fa-solid fa-plus"></i>Publish a ride</a>
+
+      <div class="user-dropdown" onclick="toggleDropdown()">
+        <img src="https://img.freepik.com/premium-vector/avatar-profile-icon_188544-4755.jpg" alt="User" class="profile">
+        <div class="dropdown-content" id="dropdown-menu">
+          <% if (isLoggedIn) { %>
+          <span style="padding:10px;">Hi, <%=username%></span>   
+          <a href="/booked-rides">Your Rides</a>
+          <!-- <a href="/inbox">Inbox</a> -->
+          <a href="/profile" class="droplink"><i class="fa-regular fa-user"></i>Profile</a>
+          <a href="/published-rides">Published rides</a>
+          <a href="/notification">Notifcations</a>
+          <a href="/logout">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+          <a href="/signup">Sign up</a>
+        <% } %>
+        </div>
+      </div>
+    </div>
+  </header>
+
+    <script src="/socket.io/socket.io.js"></script>
+<script>
+  function toggleDropdown() {
+    const menu=document.getElementById('dropdown-menu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+window.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('dropdown-menu');
+    const profile = document.querySelector('.user-dropdown');
+    if (!profile.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const socket = io();
+
+       socket.on("connect", () => {
+       const userId = "<%= userId%>";
+       console.log("Socket connected, registering userId:", userId);
+       if(userId){
+           socket.emit("registerUser", userId);
+       } else {
+           console.error("User  ID is not defined.");
+       }
+   });
+  
+
+   function showNotification({ message, url }) {
+    console.log("Showing notification:", message, url);
+    const container = document.getElementById("notification-container");
+    if (!container) {
+        console.error("Notification container not found");
+        return;
+    }
+
+    const box = document.createElement("div");
+    box.classList.add("notification-box");
+    box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:start;">
+            <div>
+                <div>${message}</div>
+                ${url?`<div style="margin-top:6px;"><a href="${url}">View</a></div>` : ""}
+            </div>
+            <div class="close-btn" style="cursor:pointer;">&times;</div>
+        </div>
+    `;
+    box.querySelector(".close-btn").addEventListener("click", () => box.remove());
+    container.prepend(box);
+    setTimeout(() => box.remove(), 6000);
+}
+
+
+    socket.on("newBookingRequest",(notification)=>{
+        console.log("in new booking")
+        const targetUrl= `/ride/${notification.rideId}/requests`;
+        showNotification({
+            message: notification.message,
+            url: targetUrl
+        });
+    });
+
+    socket.on("newChatNotification", (notification) => {
+    console.log("Received newChatNotification:", notification); 
+    if (notification.roomId && notification.roomId !== "") {
+        targetUrl = `/inbox/${notification.roomId}`;
+    }
+    showNotification({
+        message: notification.message,
+        url: targetUrl
+    });
+});
+});
+
+</script>
+</body>
+</html>

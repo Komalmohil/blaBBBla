@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Published Rides</title>
+  <link rel="stylesheet" href="/css/bookingstyle.css">
+</head>
+<body>
+  <%- include('partials/header.ejs') %>
+
+  <main>
+    <div class="container">
+      <h1>Published Rides</h1>
+      <% if (rides.length > 0) { %>
+        <ul class="ride-list">
+          <% rides.forEach(ride => { %>
+            <li class="ride-item">
+              <a href="/ride/<%= ride._id%>/bookings" style="text-decoration:none;color:inherit;">
+                <strong><%= ride.location %> => <%= ride.destination %></strong><br>
+                Date: <%= ride.date %><br>
+                Seats Left: <%= ride.seats %>
+              </a>
+              <br>
+              <button><a href="/ride/<%= ride._id %>/requests" class="btn-view-requests">View Requests</a>
+            </button></li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p>You have not published any rides yet.</p>
+      <% } %>
+    </div>
+  </main>
+</body>
+</html>

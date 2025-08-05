@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rides from <%= from %> to <%= to %></title>
+  <link rel="stylesheet" href="/css/routeRides.css">
+</head>
+<body>
+  <%- include('partials/header.ejs') %>
+
+  <div class="box">
+    <h2>Rides from <%= from %> to <%= to %></h2>
+
+    <ul class="ride-list">
+      <% if (rides.length === 0) { %>
+        <p>No rides found for this route.</p>
+      <% } else { %>
+        <% rides.forEach(ride => { %>
+          <li class="ride-item">
+            <strong><%= ride.location %> => <%= ride.destination %></strong><br>
+            <p>Driver: <%= ride.publisherId?.name || 'N/A' %></p>
+            <p><%= ride.seats %> seats | ₹<%= ride.price %></p>
+            <a href="/ride/<%= ride._id %>">View ride</a>
+          </li>
+        <% }); %>
+      <% } %>
+    </ul>
+  </div>
+</body>
+</html>

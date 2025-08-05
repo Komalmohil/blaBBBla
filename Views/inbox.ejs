@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Document</title>
+<style>
+
+#chat-container{
+ width:90%;
+ margin:20px;
+ padding:5px;
+ height:80%
+}
+ #messages {
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+  padding: 14px;
+  background: #fff9f9;
+}
+
+.msgs {
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.sent {
+  align-self:flex-end;
+  background-color: #f7e2cf;
+}
+
+.received {
+  align-self: flex-start;
+  background-color: #c9d9f9;
+}
+
+</style>
+</head>
+<body>
+  <%- include("partials/header") %>
+ <h4>my id <%=senderId%></h4>
+  <div id="chat-container">
+  <div id="messages">
+    <% messages.forEach(msg => { %>
+      <div class="msgs <%= (msg.sender).toString()===senderId?'sent':'received' %>">
+        <%= msg.text %> <%=(msg.sender).toString()===senderId?'true':'false' %>
+      </div>
+    <% }) %>
+  </div>
+
+  <form id="form">
+    <input id="msg" autocomplete="off" /><button>Send</button>
+  </form>
+
+  <p>
+    room id <%= roomId %><br>
+    receiver <%= receiverId %><br>
+    sender <%= senderId %><br>
+    ride <%= rideId %>
+  </p>
+</div>
+
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket= io();
+  const room="<%=roomId%>"; 
+  const receiverId ="<%= receiverId %>"; 
+  const rideId="<%=rideId %>";
+  const senderId="<%= senderId %>"; 
+
+console.log("senderid type",typeof(senderId))
+console.log("curr","new")
+
+
+  socket.on("connect", () => {
+    console.log("Socket connected in FE",socket.id);  
+    socket.emit("registerUser",senderId);
+    socket.emit("joinRoom",room);
+  });
+
+  const form= document.getElementById("form");
+  const input=document.getElementById("msg");
+  const messagesDiv=document.getElementById("messages");
+
+  form.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const msg=input.value.trim();
+    if (msg&&senderId &&receiverId&&rideId){
+      socket.emit("sendMessage", {text:msg ,sender:senderId,receiver:receiverId,rideId});
+      input.value= "";
+    }
+  });
+
+  socket.on("newMessage", (message) => {
+ // console.log("New message received:",message);
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add("msgs");
+  if (message.sender===senderId) {
+    msgDiv.classList.add("sent");
+  } else {
+    msgDiv.classList.add("received");
+  }
+
+  msgDiv.textContent = message.text;
+  messagesDiv.appendChild(msgDiv);
+});
+
+
+</script>
+
+</body>
+</html>

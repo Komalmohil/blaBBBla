@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Publish Ride</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+  <link rel="stylesheet" href="/css/ride.css"> 
+</head>
+<body>
+  <%- include("partials/header.ejs") %>
+
+  <h1 class="centered-title">Complete the details for your ride</h1>
+
+  <div class="container">
+    <div class="form-section">
+      <form id="rideForm">
+        
+        <div class="locDes" id="location-box">
+          <label>Pick-up</label>
+          <input type="text" id="location" name="Pickuploc" autocomplete="off" required />
+          <div id="locSugg" class="autocomplete-suggestions hidden"></div>
+        </div>
+
+        <div id="pickup-section" class="hidden">
+          <label>Where would you like to pick up passengers? </label>
+          <input type="text" name="pickupPoint" id="pickupPoint" readonly required />
+          <input type="hidden" id="pickupLat" name="pickupLat" />
+          <input type="hidden" id="pickupLng" name="pickupLng" />
+        </div>
+
+        <div class="locDes hidden" id="destination-box">
+          <label>Drop-off</label>
+          <input type="text" id="destination" name="dropOffdest" autocomplete="off" required />
+          <div id="desSugg" class="autocomplete-suggestions hidden"></div>
+        </div>
+
+        <div class="hidden" id="dropoff-section">
+          <label>Where would you like to drop off passengers?</label>
+          <input type="text" name="dropoffPoint" id="dropoffPoint" readonly required />
+          <input type="hidden" id="dropLat" name="dropLat" />
+          <input type="hidden" id="dropLng" name="dropLng" />
+        </div>
+        
+       <div id="routeConfirm" class="hidden">
+        <label class="route-title">What is your route?</label>
+        <div id="routeOptions" class="route-options"></div>
+        <input type="hidden" id="routeIndex" name="routeIndex"/>
+      </div>
+
+        <div class="hidden" id="otherfields">
+          <label>Travel Date</label>
+          <input type="date" name="date" required />
+
+          <label>Pickup Time</label>
+          <input type="time" name="pickupTime" required />
+
+          <label>Passengers</label>
+          <input type="number" name="seats" min="1" required />
+
+          <label>Price (₹)</label>
+          <input type="number" name="price" required />
+
+          <!-- <div class="checkbox-group">
+        <label><input type="checkbox" name="returnTrip" id="returnTrip"> Publish return ride as well</label>
+        <label><input type="checkbox" name="returnTripDone" id="returnTripDone"> Published</label>
+        <label><input type="checkbox" name="later" id="later"> Later</label>
+        </div> -->
+
+          <button type="submit">Publish Ride</button>
+           </form>
+          <div id="errorMessage" style="color: red; margin-top: 8px;"></div>
+        </div>
+     
+    </div>
+
+    <div class="map-section">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.min.js"></script>
+  <script src="/js/publishridemap.js"></script>
+</body>
+</html>
